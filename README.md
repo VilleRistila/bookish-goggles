@@ -1,10 +1,3 @@
-# bookish-goggles
-Cybersec
-
-![image](https://github.com/user-attachments/assets/aaccf54b-da93-413e-b3f2-09ce964f89d8)
-
-
-
 # Logbook
 Cybersecurity and data privacy 2024 - Blended
 
