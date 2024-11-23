@@ -1,20 +1,21 @@
 import { serve } from "https://deno.land/std@0.199.0/http/server.ts";
+import { loginUser } from "./routes/login.js";
 import { registerUser } from "./routes/register.js";
+
+let connectionInfo = {};
 
 // Middleware to set security headers globally
 async function addSecurityHeaders(req, handler) {
     const response = await handler(req);
 
     // Set security headers
-    response.headers.set(
-        "Content-Security-Policy",
+    response.headers.set("Content-Security-Policy",
         "default-src 'self'; " +
-            "script-src 'self'; " +
-            "style-src 'self'; " +
-            "img-src 'self'; " +
-            "frame-ancestors 'none'; " +
-            "form-action 'self';"
-    );
+        "script-src 'self'; " +
+        "style-src 'self'; " +
+        "img-src 'self'; " +
+        "frame-ancestors 'none'; " +
+        "form-action 'self';"); // Allow form submissions only to your domain
     response.headers.set("X-Frame-Options", "DENY"); // Prevent Clickjacking
     response.headers.set("X-Content-Type-Options", "nosniff"); // Prevent MIME type sniffing
 
@@ -56,8 +57,19 @@ async function handler(req) {
 
     // Route: Handle user registration
     if (url.pathname === "/register" && req.method === "POST") {
-        // Pass the request object directly to `registerUser`
-        return await registerUser(req);
+        const formData = await req.formData();
+        return await registerUser(formData);
+    }
+
+    // Route: Login page
+    if (url.pathname === "/login" && req.method === "GET") {
+        return await serveStaticFile("./views/login.html", "text/html");
+    }
+
+    // Route: Handle user login
+    if (url.pathname === "/login" && req.method === "POST") {
+        const formData = await req.formData();
+        return await loginUser(formData, connectionInfo);
     }
 
     // Default response for unknown routes
@@ -83,8 +95,8 @@ function getContentType(filePath) {
 
 // Start the server with middleware
 async function mainHandler(req, info) {
+    connectionInfo = info;
     return await addSecurityHeaders(req, handler);
 }
 
-// Start the server
 serve(mainHandler, { port: 8000 });
