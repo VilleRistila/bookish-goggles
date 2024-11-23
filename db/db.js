@@ -7,6 +7,7 @@ const client = new Client({
   hostname: "localhost",
   password: "12345678",
   port: 5433,
+  tls: false,
 });
 
 await client.connect();
