@@ -6,7 +6,7 @@ const client = new Client({
   database: "postgres",
   hostname: "localhost",
   password: "12345678",
-  port: 5433,
+  port: 5432,
 });
 
 await client.connect();
