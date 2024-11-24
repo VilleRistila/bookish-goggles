@@ -8,19 +8,14 @@ let connectionInfo = {};
 async function addSecurityHeaders(req, handler) {
     const response = await handler(req);
 
-    const url = new URL(req.url);
-
-    // Set security headers, but skip Content-Security-Policy for /register (vulnerability added)
-    if (url.pathname !== "/register") { 
-        response.headers.set("Content-Security-Policy",
-            "default-src 'self'; " +
-            "script-src 'self'; " +
-            "style-src 'self'; " +
-            "img-src 'self'; " +
-            "frame-ancestors 'none'; " +
-            "form-action 'self';"); // Allow form submissions only to your domain
-    }
-
+    // Set security headers
+    response.headers.set("Content-Security-Policy",
+        "default-src 'self'; " +
+        "script-src 'self'; " +
+        "style-src 'self'; " +
+        "img-src 'self'; " +
+        "frame-ancestors 'none'; " +
+        "form-action 'self';"); // Allow form submissions only to your domain
     response.headers.set("X-Frame-Options", "DENY"); // Prevent Clickjacking
     response.headers.set("X-Content-Type-Options", "nosniff"); // Prevent MIME type sniffing
 
