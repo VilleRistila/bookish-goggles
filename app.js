@@ -8,16 +8,23 @@ let connectionInfo = {};
 async function addSecurityHeaders(req, handler) {
     const response = await handler(req);
 
-    // Set security headers
-    response.headers.set("Content-Security-Policy",
-        "default-src 'self'; " +
-        "script-src 'self'; " +
-        "style-src 'self'; " +
-        "img-src 'self'; " +
-        "frame-ancestors 'none'; " +
-        "form-action 'self';"); // Allow form submissions only to your domain
-    response.headers.set("X-Frame-Options", "DENY"); // Prevent Clickjacking
-    response.headers.set("X-Content-Type-Options", "nosniff"); // Prevent MIME type sniffing
+    // Example: Remove Content-Security-Policy for /register page to allow testing XSS
+    const url = new URL(req.url);
+    if (!url.pathname.includes("/register")) {
+        response.headers.set("Content-Security-Policy",
+            "default-src 'self'; " +
+            "script-src 'self'; " +
+            "style-src 'self'; " +
+            "img-src 'self'; " +
+            "frame-ancestors 'none'; " +
+            "form-action 'self';"); // Allow form submissions only to your domain
+    }
+
+    // Example: Remove X-Frame-Options for all routes to allow Clickjacking tests
+    // response.headers.set("X-Frame-Options", "DENY"); // Removed intentionally
+
+    // Example: Allow MIME sniffing by removing X-Content-Type-Options header
+    // response.headers.set("X-Content-Type-Options", "nosniff"); // Removed intentionally
 
     return response;
 }
@@ -29,8 +36,9 @@ async function serveStaticFile(path, contentType) {
         return new Response(data, {
             headers: { "Content-Type": contentType },
         });
-    } catch {
-        return new Response("File not found", { status: 404 });
+    } catch (err) {
+        // Expose stack trace in errors (Information disclosure)
+        return new Response(`File not found: ${err.message}`, { status: 404 });
     }
 }
 
@@ -57,8 +65,9 @@ async function handler(req) {
 
     // Route: Handle user registration
     if (url.pathname === "/register" && req.method === "POST") {
+        // Missing input validation here to allow injection tests
         const formData = await req.formData();
-        return await registerUser(formData);
+        return await registerUser(formData); // No validation for register inputs
     }
 
     // Route: Login page
@@ -68,6 +77,7 @@ async function handler(req) {
 
     // Route: Handle user login
     if (url.pathname === "/login" && req.method === "POST") {
+        // Missing validation and sanitization of login form
         const formData = await req.formData();
         return await loginUser(formData, connectionInfo);
     }
@@ -99,4 +109,5 @@ async function mainHandler(req, info) {
     return await addSecurityHeaders(req, handler);
 }
 
+// Example: Start the server with insecure cookies
 serve(mainHandler, { port: 8000 });
