@@ -43,8 +43,18 @@
             <div class="form-group">
                 <button type="submit">Save Reservation</button>
             </div>
+
+            <!-- Exit Button -->
+            <div class="form-group">
+                <button type="button" onclick="goBack()">Back to Home</button> 
+            </div>
         </form>
     </div>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
     <script src="/static/reservationsList.js"></script>
 </body>
 </html>
