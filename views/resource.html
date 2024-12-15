@@ -4,13 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Resources</title>
-    <style>
-        .back-button {
-            margin-top: 1.5em; 
-            margin-left: 0; 
-        }
-    </style>
-
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
@@ -37,18 +30,7 @@
                 <button type="submit">Save Resource</button>
             </div>
         </form>
-        
-           <!-- Back to Home Button -->
-        <div class="form-group">
-            <button type="button" class="back-button" onclick="goBack()">Back to Home</button>
-        </div>
+        <a href="/" class="btn">Back to Home</a>
     </div>
-
-    <script>
-        function goBack() {
-            window.history.back();
-        }
-    </script>
-
 </body>
 </html>
