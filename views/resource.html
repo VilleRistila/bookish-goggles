@@ -36,13 +36,19 @@
             <div class="form-group">
                 <button type="submit">Save Resource</button>
             </div>
-
-            <!-- Back to Home Button -->
-        <div class="form-group">
-            <button class="back-button" onclick="goBack()">Back to Home</button>
-        </div>
-
         </form>
+        
+           <!-- Back to Home Button -->
+        <div class="form-group">
+            <button type="button" class="back-button" onclick="goBack()">Back to Home</button>
+        </div>
     </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+
 </body>
 </html>
